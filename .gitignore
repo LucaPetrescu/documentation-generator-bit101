@@ -2,3 +2,5 @@ __pycache__/db.cpython-311.pyc
 __pycache__/main.cpython-311.pyc
 __pycache__/schemas.cpython-311.pyc
 instance/project.db
+models/__pycache__/responses.cpython-311.pyc
+routes/__pycache__/routes.cpython-311.pyc
