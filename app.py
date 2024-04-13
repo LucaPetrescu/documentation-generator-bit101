@@ -2,9 +2,10 @@ from db import db
 from flask import Flask
 from flask_cors import CORS
 from routes.routes import blp
+import os
 
 
-app = Flask(__name__)
+app = Flask(__name__, instance_path=os.path.join(os.path.expanduser('~'), 'documentation-generator'))
 CORS(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
