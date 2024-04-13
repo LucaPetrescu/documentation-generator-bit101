@@ -7,3 +7,5 @@ class ResponseModel(db.Model):
     
     id = Column(Integer, primary_key=True)
     message = Column(String)
+    response = Column(String)
+    response_type = Column(String)
