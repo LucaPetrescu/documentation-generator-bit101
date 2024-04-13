@@ -3,3 +3,5 @@ dotenv
 flask
 sqlalchemy
 schemas
+flask_sqlalchemy
+flask-cors
