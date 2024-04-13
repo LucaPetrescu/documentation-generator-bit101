@@ -3,9 +3,9 @@ from sqlalchemy import and_
 from docgen import Loader
 from schemas import ResponseSchema
 from models.responses import ResponseModel
-from docgen import Loader
+from docgen import Loader, write_response
 from db import db
-from pprint import pprint
+
 
 blp = Blueprint('back-end', __name__)
 
@@ -13,7 +13,7 @@ blp = Blueprint('back-end', __name__)
 def hello_world():
     return "<p>Hello, World!</p>"
 
-@blp.route('/askdoc/', methods=['POST'])
+@blp.route('/askdoc', methods=['POST'])
 def askdoc():
     api_key = request.headers.get('Openai-key')
     payload = request.get_json()
@@ -28,6 +28,9 @@ def askdoc():
 
         documentation=''
         documentation = loader.get_response_doc()
+
+        write_response(dir='results', content=payload['message'] + 'doc', response=documentation)
+        
         conversation = ResponseModel(message=payload['message'],
                                  response=documentation,
                                  response_type='doc')
@@ -51,6 +54,9 @@ def askupdate():
 
         documentation=''
         documentation = loader.get_response_update()
+        
+        write_response(dir='results', content=payload['message'] + 'update', response=documentation)
+
         conversation = ResponseModel(message=payload['message'],
                                  response=documentation,
                                  response_type='update')

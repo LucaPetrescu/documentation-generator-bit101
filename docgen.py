@@ -1,6 +1,7 @@
+import os
 import ast
+import hashlib
 import astunparse
-import openai
 from openai import OpenAI
 
 example_md = """
@@ -88,6 +89,14 @@ class Loader:
             docu += res + '\n'
 
         return docu
+
+def write_response(dir:str, content:str, response:str):
+    hash_value = hashlib.md5(content.encode()).hexdigest()
+
+    file_name = hash_value + ".md"
+
+    with open(os.path.join(dir, file_name), "w") as file:
+        file.write(response)
 
 
 def explain_function(client, func:str):
