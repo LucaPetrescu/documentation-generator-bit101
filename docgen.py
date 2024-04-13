@@ -1,11 +1,7 @@
-import os
-from dotenv import load_dotenv
 import ast
 import astunparse
-from pprint import pprint
+import openai
 from openai import OpenAI
-
-load_dotenv()
 
 example_md = """
 ## load_callbacks_and_logger
@@ -35,7 +31,7 @@ def load_callbacks_and_logger(args):
 - None Found
 
 """
-client = OpenAI()
+
 
 class FileParser(ast.NodeVisitor):
     def __init__(self):
@@ -59,8 +55,10 @@ class FileParser(ast.NodeVisitor):
 
 class Loader:
 
-    def __init__(self, content) -> None:
+    def __init__(self, api_key, content) -> None:
         self.content = content
+        # openai.api_key = api_key
+        self.client = OpenAI(api_key=api_key)
     
     def get_response_doc(self):
         class_methods_extractor = FileParser()
@@ -70,11 +68,11 @@ class Loader:
         class_methods_extractor.visit(tree)
         docu = ''
         for block in class_methods_extractor.parsed_content:
-            res = explain_function(block)
+            res = explain_function(self.client, block)
             docu += block + '\n'
             docu += res + '\n'
         
-        full_docu = generate_doc(docu)
+        full_docu = generate_doc(self.client, docu)
 
         return full_docu
     
@@ -86,13 +84,13 @@ class Loader:
         class_methods_extractor.visit(tree)
         docu = ''
         for block in class_methods_extractor.parsed_content:
-            res = upgrade_function(block)
+            res = upgrade_function(self.client, block)
             docu += res + '\n'
 
         return docu
 
 
-def explain_function(func:str):
+def explain_function(client, func:str):
     response = client.chat.completions.create(
     model="gpt-3.5-turbo-0125",
     response_format={ "type": "text" },
@@ -103,7 +101,7 @@ def explain_function(func:str):
     )
     return response.choices[0].message.content
 
-def generate_doc(doc:str):
+def generate_doc(client, doc:str):
     response = client.chat.completions.create(
     model="gpt-3.5-turbo-0125",
     response_format={ "type": "text" },
@@ -116,7 +114,7 @@ def generate_doc(doc:str):
     )
     return response.choices[0].message.content
 
-def upgrade_function(func:str):
+def upgrade_function(client, func:str):
     response = client.chat.completions.create(
     model="gpt-3.5-turbo-0125",
     response_format={ "type": "text" },

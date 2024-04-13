@@ -15,6 +15,7 @@ def hello_world():
 
 @blp.route('/askdoc/', methods=['POST'])
 def askdoc():
+    api_key = request.headers.get('Openai-key')
     payload = request.get_json()
     errors = ResponseSchema().validate(payload)
     if errors:
@@ -23,7 +24,7 @@ def askdoc():
     conversation = ResponseModel.query.filter(and_(ResponseModel.message == payload['message'],
                                                    ResponseModel.response_type == 'doc')).first()
     if conversation is None:
-        loader = Loader(payload['message'])
+        loader = Loader(api_key, payload['message'])
 
         documentation=''
         documentation = loader.get_response_doc()
@@ -37,6 +38,7 @@ def askdoc():
 
 @blp.route('/askupdate', methods=['POST'])
 def askupdate():
+    api_key = request.headers.get('Openai-key')
     payload = request.get_json()
     errors = ResponseSchema().validate(payload)
     if errors:
@@ -45,7 +47,7 @@ def askupdate():
     conversation = ResponseModel.query.filter(and_(ResponseModel.message == payload['message'],
                                                    ResponseModel.response_type == 'update')).first()
     if conversation is None:
-        loader = Loader(payload['message'])
+        loader = Loader(api_key, payload['message'])
 
         documentation=''
         documentation = loader.get_response_update()
