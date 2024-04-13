@@ -4,3 +4,5 @@ __pycache__/schemas.cpython-311.pyc
 instance/project.db
 models/__pycache__/responses.cpython-311.pyc
 routes/__pycache__/routes.cpython-311.pyc
+__pycache__/docgen.cpython-311.pyc
+output.txt
