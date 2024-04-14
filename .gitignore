@@ -6,3 +6,4 @@ models/__pycache__/responses.cpython-311.pyc
 routes/__pycache__/routes.cpython-311.pyc
 __pycache__/docgen.cpython-311.pyc
 output.txt
+client/public/genezio.svg
